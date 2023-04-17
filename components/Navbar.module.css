@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+.container .navbar {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar li {
+  list-style: none;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: unset;
+  font-weight: 600;
+}

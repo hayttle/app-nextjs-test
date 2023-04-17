@@ -8,6 +8,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .remember {
@@ -19,5 +20,5 @@
 
 .link {
   text-decoration: none;
-  color: #0000ff;
+  color: #4646ff;
 }

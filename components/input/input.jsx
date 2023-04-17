@@ -1,10 +1,12 @@
 import styles from "./Input.module.css"
 
-export default function Input({text, type, value, placeholder}) {
+export default function Input(props) {
+  
+
   return (
     <div className={styles.container}>
-      <label htmlFor={text}>{text}</label>
-      <input name={text} type={type} value={value} placeholder={placeholder} />
+      <label htmlFor={props.name ? props.name : ''}>{props.text ? props.text : ''}</label>
+      <input {...props} />
     </div>
   )
 }
