@@ -9,11 +9,16 @@ import {createUser} from "./api/users"
 
 export default function signUp() {
   const [form, setForm] = useState("")
+  const [message, setMessage] = useState("")
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      createUser(form)
+      const user = await createUser(form)
+      //TODO: PEGAR RETORNO USUÁRIO DA API
+
+      setForm("")
+      setMessage(`Usuário cadastrado!`)
     } catch (error) {
       console.error(error)
     }
@@ -21,6 +26,10 @@ export default function signUp() {
 
   const handleChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value})
+  }
+
+  const handleMessageClick = () => {
+    setMessage("")
   }
 
   return (
@@ -42,6 +51,7 @@ export default function signUp() {
               type="text"
               name="name"
               id="text"
+              value={form.name ? form.name : ""}
               placeholder="Informe seu nome"
               onChange={handleChange}
             />
@@ -50,6 +60,7 @@ export default function signUp() {
               type="email"
               name="email"
               id="email"
+              value={form.email ? form.email : ""}
               placeholder="Informe seu email"
               onChange={handleChange}
             />
@@ -58,10 +69,18 @@ export default function signUp() {
               type="password"
               name="password"
               id="password"
+              value={form.password ? form.password : ""}
               placeholder="Informe sua senha"
               onChange={handleChange}
             />
           </div>
+          {message ? (
+            <div onClick={handleMessageClick} className={styles.success}>
+              {message}
+            </div>
+          ) : (
+            ""
+          )}
           <div className={styles.footer}>
             <Link className={styles.link} href="/signin">
               Já tenho conta.

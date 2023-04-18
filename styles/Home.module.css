@@ -1,4 +1,4 @@
-.title{
+.title {
   text-align: center;
   margin-bottom: 20px;
 }
@@ -21,4 +21,26 @@
 .link {
   text-decoration: none;
   color: #4646ff;
+}
+
+.success {
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 4px;
+  font-size: 14px;
+  padding: 5px;
+  background-color: #198754;
+  color: white;
+  border-radius: 4px;
+}
+
+.error {
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 4px;
+  font-size: 14px;
+  padding: 5px;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 4px;
 }
