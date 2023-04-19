@@ -5,8 +5,8 @@ import Button from "@/components/button/button"
 import Link from "next/link"
 import Head from "next/head"
 import {useState} from "react"
-import {getUser} from "./api/users"
-import { useRouter } from "next/router"
+import {getUser} from "../services/users"
+import {useRouter} from "next/router"
 
 export default function signIn() {
   const router = useRouter()
@@ -14,11 +14,26 @@ export default function signIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const res = await getUser(form)
-    if(res){
-      console.log('Usuário autenticado!')
-      router.push('/')
+
+    if (!form.email) {
+      alert("Preencha o email!")
+      return
     }
+
+    const user = await getUser(form.email)
+
+    if (user.length === 0) {
+      alert("Email não cadastrado!")
+      setForm("")
+      return
+    }
+
+    if (user[0].password !== form.password) {
+      alert("Senha inválida!")
+      return
+    }
+
+    router.push("/")
   }
 
   const handleChange = (e) => {
@@ -43,13 +58,23 @@ export default function signIn() {
         </div>
         <form onSubmit={handleSubmit}>
           <div>
-            <Input text="Email" name="email" type="email" placeholder="Informe seu email" onChange={handleChange} />
+            <Input
+              text="Email"
+              name="email"
+              type="email"
+              value={form.email ? form.email : ""}
+              placeholder="Informe seu email"
+              onChange={handleChange}
+              required
+            />
             <Input
               text="Senha"
               name="password"
               type="password"
+              value={form.password ? form.password : ""}
               placeholder="Informe sua senha"
               onChange={handleChange}
+              required
             />
           </div>
           <div className={styles.footer}>

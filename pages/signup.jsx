@@ -5,7 +5,7 @@ import Layout from "@/components/LayoutCardSignIn"
 import Input from "@/components/input/input"
 import Button from "@/components/button/button"
 import Link from "next/link"
-import {createUser} from "./api/users"
+import {createUser} from "../services/users"
 
 export default function signUp() {
   const [form, setForm] = useState("")
@@ -15,10 +15,10 @@ export default function signUp() {
     e.preventDefault()
     try {
       const user = await createUser(form)
-      //TODO: PEGAR RETORNO USUÁRIO DA API
-
-      setForm("")
-      setMessage(`Usuário cadastrado!`)
+      if (user) {
+        setForm("")
+        setMessage(`Usuário cadastrado!`)
+      }
     } catch (error) {
       console.error(error)
     }
@@ -54,6 +54,7 @@ export default function signUp() {
               value={form.name ? form.name : ""}
               placeholder="Informe seu nome"
               onChange={handleChange}
+              required
             />
             <Input
               text="Email"
@@ -63,6 +64,7 @@ export default function signUp() {
               value={form.email ? form.email : ""}
               placeholder="Informe seu email"
               onChange={handleChange}
+              required
             />
             <Input
               text="Senha"
@@ -72,6 +74,7 @@ export default function signUp() {
               value={form.password ? form.password : ""}
               placeholder="Informe sua senha"
               onChange={handleChange}
+              required
             />
           </div>
           {message ? (
