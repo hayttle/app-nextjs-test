@@ -6,6 +6,7 @@ import Input from "@/components/input/input"
 import Button from "@/components/button/button"
 import Link from "next/link"
 import {getUser, createUser} from "../services/users"
+import Select from "@/components/select/select"
 
 export default function signUp() {
   const [form, setForm] = useState("")
@@ -51,7 +52,7 @@ export default function signUp() {
       </Head>
       <Layout>
         <div className={styles.title}>
-          <h2>Faça seu cadastro!</h2>
+          <h2>Cadastro de usuário!</h2>
         </div>
         <form onSubmit={handleSubmit}>
           <div>
@@ -85,6 +86,7 @@ export default function signUp() {
               onChange={handleChange}
               required
             />
+            <Select name="level" text="Nível"/>
           </div>
           {message ? (
             <div onClick={handleMessageClick} className={`${styles.message} ${styles[type]}`}>
