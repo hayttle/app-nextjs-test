@@ -8,6 +8,7 @@ export const getUser = async (email) => {
 }
 
 export const createUser = async (data) => {
+  
   const res = await axios.post(`/api/users/`, data)
   const user = await res.data
 
