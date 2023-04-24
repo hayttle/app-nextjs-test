@@ -1,17 +1,17 @@
 import axios from "axios"
 import jwt from "jsonwebtoken"
 
-const createToken = (email) => {
-  const token = jwt.sign({email}, process.env.JWT_SECRET)
-
+const createToken = (data) => {
+  const token = jwt.sign(data, process.env.JWT_SECRET)
   return token
 }
 
 export const verifyToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    return decoded
   } catch (err) {
-    console.log(err)
+    throw new Error("Token inválido!")
   }
 }
 
@@ -32,6 +32,8 @@ export const login = async (body) => {
   const resp = await axios.get("http://localhost:5000/users", {params: {email: body.email}})
   const user = resp.data
 
+  const {password, ...userLogged} = user[0]
+
   if (user.length === 0) {
     throw new Error("Usuário não encontrado!")
   }
@@ -40,7 +42,7 @@ export const login = async (body) => {
     throw new Error("Senha inválida!")
   }
 
-  const token = createToken(body.email)
+  const token = createToken(userLogged)
 
   return token
 }

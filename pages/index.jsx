@@ -1,22 +1,9 @@
 import Head from "next/head"
 import Layout from "@/components/Layout"
-import {getCookie} from "cookies-next"
-import {useRouter} from "next/router"
-import {useEffect} from "react"
+import {deleteCookie, getCookie} from "cookies-next"
 import {verifyToken} from "@/services/users"
 
-export default function Dashboard() {
-  const router = useRouter()
-  const token = getCookie("jwt_authorization")
-
-  useEffect(() => {
-    if (!token) {
-      router.push("/signin")
-    }
-  }, [])
-
-  //TODO: verificar token
-
+export default function Dashboard({user}) {
   return (
     <div>
       <Head>
@@ -28,8 +15,31 @@ export default function Dashboard() {
       <Layout>
         <main>
           <h2>Dashboard</h2>
+          <p>Bem-vindo(a) {user && <span>{user.name}</span>}</p>
         </main>
       </Layout>
     </div>
   )
+}
+
+export const getServerSideProps = async ({req, res}) => {
+  try {
+    const token = getCookie("jwt_authorization", {req, res})
+    if (!token) {
+      throw new Error("Token inválido!")
+    }
+    const user = verifyToken(token)
+    return {
+      props: {user}
+    }
+  } catch (error) {
+    deleteCookie("jwt_authorization", {req, res})
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/signin"
+      },
+      props: {}
+    }
+  }
 }

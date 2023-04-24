@@ -6,11 +6,20 @@
   background-color: white;
 }
 
-.container main{
+.container main {
   height: 100vh;
 }
 
-.container main h2{
+.container main h2 {
   margin: 20px 0;
   text-align: center;
+}
+
+.container main p {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.container main p span {
+  font-weight: bold;
 }

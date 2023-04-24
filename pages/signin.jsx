@@ -7,16 +7,11 @@ import Head from "next/head"
 import axios from "axios"
 import {useState} from "react"
 import {useRouter} from "next/router"
-import {setCookie, getCookie} from "cookies-next"
+import {setCookie, getCookie, deleteCookie} from "cookies-next"
+import {verifyToken} from "@/services/users"
 
 export default function signIn() {
   const router = useRouter()
-
-  const token = getCookie("jwt_authorization")
-
-  if (token) {
-    router.push("/")
-  }
 
   const [form, setForm] = useState("")
   const [message, setMessage] = useState("")
@@ -32,10 +27,10 @@ export default function signIn() {
     try {
       const response = await axios.get("/api/users/login", {params: form})
       const token = response.data
-      
-      if(response.status !== 200) throw new Error(token)
-      
-      setCookie("jwt_authorization", token, {maxAge: 60 * 5})
+
+      if (response.status !== 200) throw new Error(token)
+
+      setCookie("jwt_authorization", token, {maxAge: 60 * 60})
       router.push("/")
     } catch (error) {
       setMessage(error.response.data)
@@ -88,12 +83,10 @@ export default function signIn() {
               required
             />
           </div>
-          {message ? (
+          {message && (
             <div onClick={handleMessageClick} className={`${styles.message} ${styles[type]}`}>
               {message}
             </div>
-          ) : (
-            ""
           )}
           <div className={styles.footer}>
             <div className={styles.remember}>
@@ -111,4 +104,26 @@ export default function signIn() {
       </Layout>
     </>
   )
+}
+
+export const getServerSideProps = async ({req, res}) => {
+  try {
+    const token = getCookie("jwt_authorization", {req, res})
+    if (!token) {
+      throw new Error("Token inválido!")
+    }
+    verifyToken(token)
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/"
+      },
+      props: {}
+    }
+  } catch (error) {
+    deleteCookie("jwt_authorization", {req, res})
+    return {
+      props: {}
+    }
+  }
 }

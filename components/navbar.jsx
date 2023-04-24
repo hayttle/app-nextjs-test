@@ -7,9 +7,6 @@ export default function Navbar() {
       <h2>LOGO</h2>
       <ul className={styles.navbar}>
         <li>
-          <Link href="/">Dashboard</Link>
-        </li>
-        <li>
           <Link href="/signin">Login</Link>
         </li>
         <li>
