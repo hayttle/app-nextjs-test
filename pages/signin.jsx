@@ -4,12 +4,20 @@ import Input from "@/components/input/input"
 import Button from "@/components/button/button"
 import Link from "next/link"
 import Head from "next/head"
+import axios from "axios"
 import {useState} from "react"
-import {getUser} from "../services/users"
 import {useRouter} from "next/router"
+import {setCookie, getCookie} from "cookies-next"
 
 export default function signIn() {
   const router = useRouter()
+
+  const token = getCookie("jwt_authorization")
+
+  if (token) {
+    router.push("/")
+  }
+
   const [form, setForm] = useState("")
   const [message, setMessage] = useState("")
   const [type, setType] = useState("")
@@ -21,23 +29,18 @@ export default function signIn() {
       alert("Preencha o email!")
       return
     }
-
-    const user = await getUser(form.email)
-
-    if (user.length === 0) {
-      setMessage(`Usuário não cadastrado!`)
+    try {
+      const response = await axios.get("/api/users/login", {params: form})
+      const token = response.data
+      
+      if(response.status !== 200) throw new Error(token)
+      
+      setCookie("jwt_authorization", token, {maxAge: 60 * 5})
+      router.push("/")
+    } catch (error) {
+      setMessage(error.response.data)
       setType("error")
-      setForm("")
-      return
     }
-
-    if (user[0].password !== form.password) {
-      setMessage(`Senha inválida!`)
-      setType("error")
-      return
-    }
-
-    router.push("/")
   }
 
   const handleChange = (e) => {
@@ -47,7 +50,7 @@ export default function signIn() {
   const handleMessageClick = () => {
     setMessage("")
   }
-  
+
   const handleCheckboxChange = (e) => {
     setForm({...form, [e.target.name]: e.target.checked})
   }

@@ -1,11 +1,11 @@
 import {useState} from "react"
+import axios from "axios"
 import Head from "next/head"
 import styles from "@/styles/Home.module.css"
 import Layout from "@/components/LayoutCardSignIn"
 import Input from "@/components/input/input"
 import Button from "@/components/button/button"
 import Link from "next/link"
-import {getUser, createUser} from "../services/users"
 import Select from "@/components/select/select"
 
 export default function signUp() {
@@ -14,23 +14,18 @@ export default function signUp() {
   const [type, setType] = useState("")
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
     try {
-      const isEmailExist = await getUser(form.email)
+      e.preventDefault()
+      const resp = await axios.post("/api/users/cadastro", form)
+      const json = await resp.data
 
-      if (isEmailExist.length !== 0) {
-        setMessage(`Email já cadastrado!`)
-        setType("error")
-        return
-      }
+      if (resp.status !== 201) throw new Error(json)
 
-      const user = await createUser(form)
-
-      setForm("")
-      setMessage(`Usuário ${user.name} cadastrado com sucesso!`)
+      setMessage("Usuário cadastrado com sucesso")
       setType("success")
     } catch (error) {
-      console.error(error)
+      setMessage(error.response.data)
+      setType("error")
     }
   }
 
@@ -86,14 +81,12 @@ export default function signUp() {
               onChange={handleChange}
               required
             />
-            <Select name="level" text="Nível"/>
+            <Select name="level" text="Nível" />
           </div>
-          {message ? (
+          {message && (
             <div onClick={handleMessageClick} className={`${styles.message} ${styles[type]}`}>
               {message}
             </div>
-          ) : (
-            ""
           )}
           <div className={styles.footer}>
             <Link className={styles.link} href="/signin">

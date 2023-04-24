@@ -1,7 +1,22 @@
 import Head from "next/head"
 import Layout from "@/components/Layout"
+import {getCookie} from "cookies-next"
+import {useRouter} from "next/router"
+import {useEffect} from "react"
+import {verifyToken} from "@/services/users"
 
 export default function Dashboard() {
+  const router = useRouter()
+  const token = getCookie("jwt_authorization")
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/signin")
+    }
+  }, [])
+
+  //TODO: verificar token
+
   return (
     <div>
       <Head>
